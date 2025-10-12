@@ -1,0 +1,5 @@
+entries:
+  - envName: THING_API_TOKEN
+    keepassPath: Thing/API token
+  - envName: DOCKER_TOKEN
+    keepassPath: Personal/Docker Token

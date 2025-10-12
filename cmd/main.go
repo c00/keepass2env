@@ -3,10 +3,12 @@ package main
 import (
 	"fmt"
 	"os"
+	"syscall"
 
 	"github.com/keepasssecrethelper/config"
 	"github.com/keepasssecrethelper/helper"
 	"github.com/spf13/cobra"
+	"golang.org/x/term"
 )
 
 func main() {
@@ -14,8 +16,9 @@ func main() {
 	var outputPath string
 
 	var rootCmd = &cobra.Command{
-		Use:   "keepasssecrethelper <database path> <config path>",
-		Short: "Extract passwords from keepass to a file",
+		Use:     "keepasssecrethelper <database path> <config path>",
+		Example: "keepasssecrethelper ~/passwords.kdbx passwords-to-extract.yaml",
+		Short:   "Extract passwords from keepass to a file",
 		Long: `
 Extract password from keepass to a file. Useful for seeding secrets 
 on a new machine. It will open the database and read out the given 
@@ -35,14 +38,22 @@ exist.`,
 				return fmt.Errorf("cannot get config file: %w", err)
 			}
 
-			// TODO get the goddamn pasword from stdin
+			// get the pasword from stdin
+			fmt.Print("Enter Keepass Database Password: ")
+			bytePassword, err := term.ReadPassword(int(syscall.Stdin))
+			if err != nil {
+				return fmt.Errorf("cannot read password: %w", err)
+			}
+
+			fmt.Println("")
 
 			runner := helper.Helper{
 				Params: helper.HelperParams{
-					KeyfilePath:  keyfilePath,
-					DatabasePath: dbPath,
-					OutputPath:   outputPath,
-					Config:       cfg,
+					KeyfilePath:      keyfilePath,
+					DatabasePath:     dbPath,
+					DatabasePassword: string(bytePassword),
+					OutputPath:       outputPath,
+					Config:           cfg,
 				},
 			}
 

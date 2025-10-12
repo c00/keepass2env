@@ -50,7 +50,12 @@ func (h *Helper) Run() error {
 	}
 
 	// Find and replace in output
-	updateOutputFile(h.Params.OutputPath, entries)
+	err = updateOutputFile(h.Params.OutputPath, entries)
+	if err != nil {
+		return fmt.Errorf("cannot write to file '%v': %w", h.Params.OutputPath, err)
+	}
+
+	fmt.Printf("Written secrets to: %v\n", h.Params.OutputPath)
 
 	return nil
 }
