@@ -44,3 +44,14 @@ keepass2env -c some/other/config/file.yaml
 # Set or override values
 keepass2env -k path/to/keyfile.key -d path/to/db.kdbx -o path/to/output.env
 ```
+
+## Sourcing the .env file
+
+Add something like this to your `.bashrc` or `.profile` to automatically load the secrest into your environment.
+
+```sh
+if [ -f ~/.secrets.env ]; then
+  export $(grep -v '^#' ~/.secrets.env | xargs)
+fi
+```
+
