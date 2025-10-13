@@ -11,7 +11,7 @@ import (
 	"golang.org/x/term"
 )
 
-const version = "0.0.2"
+const version = "0.0.3"
 
 func main() {
 	var configPath string
@@ -33,6 +33,11 @@ It will add or update entries in the output .env file.`,
 		Args: cobra.ExactArgs(0),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			var password string
+
+			configPath, err := runner.ExpandPath(configPath)
+			if err != nil {
+				return fmt.Errorf("cannot expand path for config file: %w", err)
+			}
 
 			cfg, err := config.FromFile(configPath)
 			if err != nil {
