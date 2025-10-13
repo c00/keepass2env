@@ -1,0 +1,17 @@
+# Path to the keepass database file
+databasePath: ~/Documents/passwords.kdbx
+# Optional. Path to the keepass keyfile.
+keyfilePath: ~/Documents/keyfile.key
+# Optional. Name of the environment variable that contains the keepass password. 
+# If not set, the user will be asked for the password interactively
+passwordEnv: KEEPASS_PASS
+# Optional. Defaults to .secrets.env (in the current folder)
+outputPath: ~/.secrets.env
+# The entries to get from the database
+entries:
+    # The Environment Variable Name to put the password into
+  - envName: THING_API_TOKEN
+    # The path inside the keepass database. (The root folder is not part of the path)
+    keepassPath: Thing/API token
+  - envName: DOCKER_TOKEN
+    keepassPath: Personal/Docker Token

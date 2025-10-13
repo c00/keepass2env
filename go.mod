@@ -1,4 +1,4 @@
-module github.com/keepasssecrethelper
+module github.com/keepass2env
 
 go 1.25.2
 

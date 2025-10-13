@@ -8,7 +8,13 @@ import (
 )
 
 type Config struct {
-	Entries []Entry `yaml:"entries"`
+	Entries      []Entry `yaml:"entries"`
+	DatabasePath string  `yaml:"databasePath,omitempty"`
+	KeyfilePath  string  `yaml:"keyfilePath,omitempty"`
+	// The environment variable to check for the password
+	PasswordEnv string `yaml:"passwordEnv,omitempty"`
+	// The location where the .env file will be created / updated
+	OutputPath string `yaml:"outputPath,omitempty"`
 }
 
 type Entry struct {
