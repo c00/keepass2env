@@ -20,7 +20,7 @@ The most important thing is the `entries`. These are the mappings from the keepa
 
 ```yaml
 entries: 
-	- envName: DOCKER_TOKEN
+  - envName: DOCKER_TOKEN
     keepassPath: Personal/Docker Token
 ```
 
