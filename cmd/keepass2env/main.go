@@ -11,7 +11,7 @@ import (
 	"golang.org/x/term"
 )
 
-const version = "0.0.1"
+const version = "0.0.2"
 
 func main() {
 	var configPath string
@@ -66,6 +66,14 @@ It will add or update entries in the output .env file.`,
 				fmt.Println("")
 			}
 
+			if databasePath == "" {
+				return fmt.Errorf("database path not set. update the config or use `-d path/to/database.kdbx`")
+			}
+
+			if password == "" {
+				return fmt.Errorf("password cannot be empty")
+			}
+
 			runner := runner.Helper{
 				Params: runner.HelperParams{
 					KeyfilePath:      keyfilePath,
@@ -80,7 +88,7 @@ It will add or update entries in the output .env file.`,
 		},
 	}
 
-	rootCmd.Flags().StringVarP(&configPath, "config", "c", "keepass2env.yaml", "Configuration file")
+	rootCmd.Flags().StringVarP(&configPath, "config", "c", "~/.config/keepass2env.yaml", "Configuration file")
 	rootCmd.Flags().StringVarP(&databasePath, "database", "d", "", "Database file")
 	rootCmd.Flags().StringVarP(&keyfilePath, "keyfile", "k", "", "Path to the keyfile")
 	rootCmd.Flags().StringVarP(&outputPath, "out", "o", ".secrets.env", "Output file")

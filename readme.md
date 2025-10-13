@@ -14,7 +14,7 @@ go install github.com/c00/keepass2env/cmd/keepass2env@latest
 
 ## Configure
 
-Copy `keepass2env.example.yaml` to `keepass2env.yaml`, and edit it to match your environment. Home directories will be expanded.
+Copy the contents of `keepass2env.example.yaml` to `~/.config/keepass2env.yaml`, and edit it to match your environment. 
 
 The most important thing is the `entries`. These are the mappings from the keepass database onto environment variables. e.g.
 
