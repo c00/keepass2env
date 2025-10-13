@@ -5,7 +5,7 @@ import (
 	"path/filepath"
 	"testing"
 
-	"github.com/keepass2env/runner"
+	"github.com/c00/keepass2env/runner"
 	"github.com/stretchr/testify/require"
 )
 

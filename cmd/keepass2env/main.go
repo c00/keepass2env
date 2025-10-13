@@ -5,8 +5,8 @@ import (
 	"os"
 	"syscall"
 
-	"github.com/keepass2env/config"
-	"github.com/keepass2env/runner"
+	"github.com/c00/keepass2env/config"
+	"github.com/c00/keepass2env/runner"
 	"github.com/spf13/cobra"
 	"golang.org/x/term"
 )

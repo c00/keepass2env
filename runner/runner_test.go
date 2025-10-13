@@ -6,7 +6,7 @@ import (
 	"path/filepath"
 	"testing"
 
-	"github.com/keepass2env/config"
+	"github.com/c00/keepass2env/config"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )

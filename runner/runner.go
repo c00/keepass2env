@@ -5,7 +5,7 @@ import (
 	"os"
 	"strings"
 
-	"github.com/keepass2env/config"
+	"github.com/c00/keepass2env/config"
 	"github.com/tobischo/gokeepasslib/v3"
 )
 

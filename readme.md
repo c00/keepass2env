@@ -9,7 +9,7 @@ When writing to file it will attempt to update old values rather than just appen
 ## Install
 
 ```sh
-go install github.com/coo/keepass2env/cmd/keepass2env@latest
+go install github.com/c00/keepass2env/cmd/keepass2env@latest
 ```
 
 ## Examples

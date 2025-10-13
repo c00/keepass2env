@@ -1,4 +1,4 @@
-module github.com/keepass2env
+module github.com/c00/keepass2env
 
 go 1.25.2
 
