@@ -104,7 +104,7 @@ func (h *Helper) openDatabase() error {
 	if h.Params.KeyfilePath != "" {
 		creds, err := gokeepasslib.NewPasswordAndKeyCredentials(h.Params.DatabasePassword, h.Params.KeyfilePath)
 		if err != nil {
-			return fmt.Errorf("cannot open database: %w", err)
+			return fmt.Errorf("cannot open key file: %w", err)
 		}
 		h.db.Credentials = creds
 	} else {
