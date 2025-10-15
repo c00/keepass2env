@@ -15,3 +15,7 @@ entries:
     keepassPath: Thing/API token
   - envName: DOCKER_TOKEN
     keepassPath: Personal/Docker Token
+  - envName: SOME_CERT
+    keepassPath: Personal/My Cert
+    # Custom attribute of an entry
+    attribute: certificate

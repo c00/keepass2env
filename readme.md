@@ -26,6 +26,20 @@ entries:
 
 This will try to find an entry called `Docker Token` in the folder `Personal` in the database. These paths are case sensitive. It will then store the password into the output file as `DOCKER_TOKEN=thepassworditfound`.
 
+### Attributes
+
+By default it will extract the password from an entry, but in some cases you may want to get a different bit of data. For this you can use the `attribute` property. This can point to custom attributes in a Keepass entry:
+
+```yaml
+entries: 
+  - envName: MY_PRIVATE_KEY
+    keepassPath: Personal/Cert for important things
+    attribute: private.key
+  - envName: MY_PUBLIC_KEY
+    keepassPath: Personal/Cert for important things
+    attribute: public.key
+```
+
 ## Notes on the password and keyfile
 
 If you don't use a keyfile, just remove that from the config yaml.
