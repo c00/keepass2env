@@ -22,6 +22,8 @@ type Entry struct {
 	EnvName string `yaml:"envName"`
 	// The path inside the Keepass Database
 	KeepassPath string `yaml:"keepassPath"`
+	// Optional: The attribute to export, defaults to password
+	Attribute string `yaml:"attribute,omitempty"`
 }
 
 func FromFile(path string) (Config, error) {

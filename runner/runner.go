@@ -25,7 +25,7 @@ type HelperParams struct {
 
 type entryWithPass struct {
 	config.Entry
-	password string
+	secret string
 }
 
 func (p *HelperParams) expandPaths() error {
@@ -63,16 +63,27 @@ func (h *Helper) Run() error {
 		return fmt.Errorf("cannot open database: %w", err)
 	}
 
-	// For each entry, get password
+	// For each entry, get password / attribute
 	entries := []entryWithPass{}
 	for _, entry := range h.Params.Entries {
 		e := entryWithPass{Entry: entry}
-		pass, err := h.getPassword(e.KeepassPath)
-		if err != nil {
-			return fmt.Errorf("cannot get password for entry '%v': %w", e.KeepassPath, err)
+
+		var secret string
+		if e.Attribute == "" || e.Attribute == "password" {
+			secret, err = h.getPassword(e.KeepassPath)
+			if err != nil {
+				return fmt.Errorf("cannot get password for entry '%v': %w", e.KeepassPath, err)
+			}
+
+		} else {
+			// Find attribute
+			secret, err = h.getAttribute(e.KeepassPath, e.Attribute)
+			if err != nil {
+				return fmt.Errorf("cannot get attribute for entry '%v': %w", e.KeepassPath, err)
+			}
 		}
 
-		e.password = pass
+		e.secret = secret
 		entries = append(entries, e)
 	}
 
@@ -126,24 +137,42 @@ func (h *Helper) getPassword(path string) (string, error) {
 	parts := strings.Split(path, "/")
 
 	for _, group := range h.db.Content.Root.Groups {
-		pass, err := h.navigate(group, parts)
+		entry, err := h.navigate(group, parts)
 		if err == nil {
-			return pass, nil
+			return entry.GetPassword(), nil
 		}
 	}
 
 	return "", fmt.Errorf("path not found: %v", path)
 }
 
-func (h *Helper) navigate(group gokeepasslib.Group, parts []string) (string, error) {
+func (h *Helper) getAttribute(path, attribute string) (string, error) {
+	// Navigate to the path
+	parts := strings.Split(path, "/")
+
+	for _, group := range h.db.Content.Root.Groups {
+		entry, err := h.navigate(group, parts)
+		if err == nil {
+			valueData := entry.Get(attribute)
+			if valueData == nil {
+				return "", fmt.Errorf("attribute %v not found in %v", attribute, path)
+			}
+			return valueData.Value.Content, nil
+		}
+	}
+
+	return "", fmt.Errorf("path not found: %v", path)
+}
+
+func (h *Helper) navigate(group gokeepasslib.Group, parts []string) (gokeepasslib.Entry, error) {
 	// Find the leaf node
 	if len(parts) == 1 {
 		for _, entry := range group.Entries {
 			if entry.GetTitle() == parts[0] {
-				return entry.GetPassword(), nil
+				return entry, nil
 			}
 		}
-		return "", fmt.Errorf("entry not found: %v", parts[0])
+		return gokeepasslib.Entry{}, fmt.Errorf("entry not found: %v", parts[0])
 	}
 
 	// Dig deeper
@@ -152,5 +181,5 @@ func (h *Helper) navigate(group gokeepasslib.Group, parts []string) (string, err
 			return h.navigate(group, parts[1:])
 		}
 	}
-	return "", fmt.Errorf("folder not found: %v", parts[0])
+	return gokeepasslib.Entry{}, fmt.Errorf("folder not found: %v", parts[0])
 }

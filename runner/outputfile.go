@@ -19,14 +19,14 @@ func updateOutputFile(path string, entries []entryWithPass) error {
 		for i, line := range lines {
 			if strings.HasPrefix(line, entry.EnvName) {
 				// Replace
-				lines[i] = fmt.Sprintf("%v=%v", entry.EnvName, entry.password)
+				lines[i] = fmt.Sprintf("%v=%v", entry.EnvName, entry.secret)
 				replaced = true
 			}
 		}
 
 		if !replaced {
 			// Add
-			lines = append(lines, fmt.Sprintf("%v=%v", entry.EnvName, entry.password))
+			lines = append(lines, fmt.Sprintf("%v=%v", entry.EnvName, entry.secret))
 		}
 	}
 

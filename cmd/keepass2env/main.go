@@ -11,7 +11,7 @@ import (
 	"golang.org/x/term"
 )
 
-const version = "0.0.3"
+const version = "0.1.0"
 
 func main() {
 	var configPath string
