@@ -6,31 +6,29 @@ import (
 	"syscall"
 
 	"github.com/c00/keepass2env/config"
-	"github.com/c00/keepass2env/fileoutput"
+	"github.com/c00/keepass2env/keyringoutput"
 	"github.com/c00/keepass2env/runner"
 	"github.com/spf13/cobra"
 	"golang.org/x/term"
 )
 
-const version = "0.1.0"
+const version = "0.0.1"
 
 func main() {
 	var configPath string
 	var keyfilePath string
-	var outputPath string
 	var databasePath string
+	var serviceName string
 
 	var rootCmd = &cobra.Command{
-		Use:     "keepass2env",
-		Example: "keepass2env -c config.yaml",
-		Short:   "Extract passwords from keepass to a file",
+		Use:     "keepass2keyring",
+		Example: "keepass2keyring -c config.yaml",
+		Short:   "Extract passwords from keepass and import them into the system keyring",
 		Version: version,
 		Long: `
 Extract password from keepass to a file. Useful for seeding secrets 
 on a new machine. It will open the database and read out the given 
-entries and put them in a .env file.
-
-It will add or update entries in the output .env file.`,
+entries and put them in the default keyring.`,
 		Args: cobra.ExactArgs(0),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			var password string
@@ -47,10 +45,6 @@ It will add or update entries in the output .env file.`,
 
 			if keyfilePath == "" && cfg.KeyfilePath != "" {
 				keyfilePath = cfg.KeyfilePath
-			}
-
-			if outputPath == ".secrets.env" && cfg.OutputPath != "" {
-				outputPath = cfg.OutputPath
 			}
 
 			if databasePath == "" && cfg.DatabasePath != "" {
@@ -81,7 +75,9 @@ It will add or update entries in the output .env file.`,
 			}
 
 			runner := runner.Helper{
-				Output: &fileoutput.FileOutput{Path: outputPath},
+				Output: &keyringoutput.KeyringOutput{
+					Service: serviceName,
+				},
 				Params: runner.HelperParams{
 					KeyfilePath:      keyfilePath,
 					DatabasePath:     databasePath,
@@ -97,7 +93,7 @@ It will add or update entries in the output .env file.`,
 	rootCmd.Flags().StringVarP(&configPath, "config", "c", "~/.config/keepass2env.yaml", "Configuration file")
 	rootCmd.Flags().StringVarP(&databasePath, "database", "d", "", "Database file")
 	rootCmd.Flags().StringVarP(&keyfilePath, "keyfile", "k", "", "Path to the keyfile")
-	rootCmd.Flags().StringVarP(&outputPath, "out", "o", ".secrets.env", "Output file")
+	rootCmd.Flags().StringVarP(&serviceName, "service", "s", "keepass2keyring", "Value for the attribute 'service'")
 
 	if err := rootCmd.Execute(); err != nil {
 		fmt.Println(err)

@@ -15,6 +15,8 @@ type Config struct {
 	PasswordEnv string `yaml:"passwordEnv,omitempty"`
 	// The location where the .env file will be created / updated
 	OutputPath string `yaml:"outputPath,omitempty"`
+	// The service name for the keyring. Defaults to keepass2keyring
+	ServiceName string `yaml:"serviceName,omitempty"`
 }
 
 type Entry struct {

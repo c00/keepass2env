@@ -6,26 +6,22 @@ import (
 	"strings"
 
 	"github.com/c00/keepass2env/config"
+	"github.com/c00/keepass2env/outputter"
 	"github.com/tobischo/gokeepasslib/v3"
 )
 
 type Helper struct {
 	Params HelperParams
 
-	db *gokeepasslib.Database
+	Output outputter.Outputter
+	db     *gokeepasslib.Database
 }
 
 type HelperParams struct {
 	DatabasePassword string
 	DatabasePath     string
 	KeyfilePath      string
-	OutputPath       string
 	Entries          []config.Entry
-}
-
-type entryWithPass struct {
-	config.Entry
-	secret string
 }
 
 func (p *HelperParams) expandPaths() error {
@@ -34,12 +30,6 @@ func (p *HelperParams) expandPaths() error {
 		return fmt.Errorf("cannot expand path '%v': %w", p.DatabasePath, err)
 	}
 	p.DatabasePath = path
-
-	path, err = ExpandPath(p.OutputPath)
-	if err != nil {
-		return fmt.Errorf("cannot expand path '%v': %w", p.OutputPath, err)
-	}
-	p.OutputPath = path
 
 	path, err = ExpandPath(p.KeyfilePath)
 	if err != nil {
@@ -64,9 +54,9 @@ func (h *Helper) Run() error {
 	}
 
 	// For each entry, get password / attribute
-	entries := []entryWithPass{}
+	entries := []config.EntryWithSecret{}
 	for _, entry := range h.Params.Entries {
-		e := entryWithPass{Entry: entry}
+		e := config.EntryWithSecret{Entry: entry}
 
 		var secret string
 		if e.Attribute == "" || e.Attribute == "password" {
@@ -82,18 +72,17 @@ func (h *Helper) Run() error {
 				return fmt.Errorf("cannot get attribute for entry '%v': %w", e.KeepassPath, err)
 			}
 		}
-
-		e.secret = secret
+		e.Secret = secret
 		entries = append(entries, e)
 	}
 
 	// Find and replace in output
-	err = updateOutputFile(h.Params.OutputPath, entries)
+	err = h.Output.Output(entries)
 	if err != nil {
-		return fmt.Errorf("cannot write to file '%v': %w", h.Params.OutputPath, err)
+		return fmt.Errorf("cannot output entries: %w", err)
 	}
 
-	fmt.Printf("Written secrets to: %v\n", h.Params.OutputPath)
+	fmt.Printf("Written secrets")
 
 	return nil
 }

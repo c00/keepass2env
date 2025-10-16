@@ -1,12 +1,10 @@
 package runner
 
 import (
-	"os"
 	"os/user"
 	"path/filepath"
 	"testing"
 
-	"github.com/c00/keepass2env/config"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
@@ -139,31 +137,11 @@ func TestRunner_getAttribute(t *testing.T) {
 	}
 }
 
-func TestRunner_updateOutputFile(t *testing.T) {
-	const output = "../assets/output.env"
-	err := os.WriteFile(output, []byte(`ANOTHER_THING=first`), 0666)
-	require.NoError(t, err)
-
-	err = updateOutputFile(output, []entryWithPass{
-		{Entry: config.Entry{EnvName: "THING"}, secret: "some-pass"},
-		{Entry: config.Entry{EnvName: "ANOTHER_THING"}, secret: "second"},
-	})
-	require.NoError(t, err)
-
-	got, err := os.ReadFile(output)
-	require.NoError(t, err)
-
-	expected := "ANOTHER_THING=second\nTHING=some-pass"
-
-	assert.Equal(t, expected, string(got))
-}
-
 func TestHelperParams_expandPaths(t *testing.T) {
 	h := Helper{
 		Params: HelperParams{
 			DatabasePath: "~/thing.kdbx",
 			KeyfilePath:  "",
-			OutputPath:   "~/foo/bar/.env",
 		},
 	}
 
@@ -175,5 +153,4 @@ func TestHelperParams_expandPaths(t *testing.T) {
 
 	assert.Equal(t, filepath.Join(usr.HomeDir, "thing.kdbx"), h.Params.DatabasePath)
 	assert.Equal(t, "", h.Params.KeyfilePath)
-	assert.Equal(t, filepath.Join(usr.HomeDir, "foo/bar/.env"), h.Params.OutputPath)
 }
