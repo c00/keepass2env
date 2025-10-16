@@ -13,7 +13,7 @@ If you have cloned the repo, just run `make install`. Otherwise, do go install:
 go install github.com/c00/keepass2env/cmd/keepass2env@latest
 
 # Keepass2keyring
-go install github.com/c00/keepass2env/cmd/keepass2env@latest
+go install github.com/c00/keepass2env/cmd/Keepass2keyring@latest
 ```
 
 ## Configure
